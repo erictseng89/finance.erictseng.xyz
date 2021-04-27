@@ -39,6 +39,7 @@ db = SQL("sqlite:///finance.db")
 if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 
+# function for viewing the portfolio
 def view_portfolio(user_id):
     user_id = session["user_id"]
     portfolio = db.execute("SELECT * FROM owned WHERE user_id = ? AND shares > 0 ORDER BY symbol ASC" , user_id)
