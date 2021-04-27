@@ -212,7 +212,7 @@ def sell():
     else:
         symbol = request.form.get("share_selected")
         shares = float(request.form.get("shares"))
-
+        # check inputs for errors
         if not symbol:
             return apology("must select shares", 400)
         elif not shares:
@@ -220,7 +220,7 @@ def sell():
         elif shares < 0.0:
             return apology("number of shares must be above 0", 400)
 
-
+        # check for html edits and user has enough stocks to sell
         owned_shares = db.execute("SELECT shares FROM owned WHERE user_id = ? AND symbol = ?", session["user_id"], symbol)[0]["shares"]
         if not owned_shares:
             return apology("select correct stock", 400)
