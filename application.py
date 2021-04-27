@@ -192,6 +192,7 @@ def register():
         elif request.form.get("password") != request.form.get("password_repeated"):
             return apology("passwords do not match", 403)
         
+        # generate password and add to database
         hashedPassword = generate_password_hash(request.form.get("password"))
         db.execute('INSERT INTO users ("username", "hash") VALUES(?, ?)', request.form.get("username"), hashedPassword)
         
