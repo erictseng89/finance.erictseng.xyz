@@ -1,0 +1,22 @@
+CREATE TABLE transactions (
+    time DATETIME DEFAULT (DATETIME('now', 'localtime')),
+    user_id INTEGER NOT NULL,
+    symbol TEXT NOT NULL,
+    name TEXT NOT NULL,
+    price REAL NOT NULL,
+    shares REAL NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE owned (
+    user_id INTEGER NOT NULL,
+    symbol TEXT NOT NULL,
+    name TEXT NOT NULL,
+    shares REAL NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+db.execute("UPDATE owned SET shares = owned + ? WHERE user_id = ? AND symbol = ?", shares, user_id, quote["symbols"].upper())
+
+
+INSERT INTO buy(user_id, symbol, name, price, shares) Values(1, "AAPL", "Apple", "1.49", "3");
