@@ -100,6 +100,7 @@ def buy():
             elif not owned:
                 db.execute("INSERT INTO owned(user_id, symbol, name, shares) Values(?, ?, ?, ?)", user_id, quote["symbol"].upper(), quote["name"], shares)
 
+            
             return view_portfolio(session["user_id"])
 
 
@@ -179,11 +180,12 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     else:
+        username = request.form.get("username")
         # Check for invalid inputs.
-        if not request.form.get("username"):
+        if not username:
             return apology("must provide username", 403)
 
-        elif db.execute("SELECT username FROM users WHERE username = ?", request.form.get("username")):
+        elif db.execute("SELECT username FROM users WHERE username = ?", username):
             return apology("that username has already been taken", 403)
         
         elif not request.form.get("password") or not request.form.get("password_repeated"):
@@ -192,10 +194,14 @@ def register():
         elif request.form.get("password") != request.form.get("password_repeated"):
             return apology("passwords do not match", 403)
         
-        # generate password and add to database
+        # generate password and add to database, db.execute will return id.
         hashedPassword = generate_password_hash(request.form.get("password"))
-        db.execute('INSERT INTO users ("username", "hash") VALUES(?, ?)', request.form.get("username"), hashedPassword)
+        id = db.execute('INSERT INTO users ("username", "hash") VALUES(?, ?)', username, hashedPassword)
         
+        # add session for user
+        session["user_id"] = id
+        
+        # return portfolio view
         return view_portfolio(session["user_id"])
 
 
